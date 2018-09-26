@@ -1,0 +1,62 @@
+{
+  "id": "807e40e0-4fa7-11e7-9a75-2966c46aa703",
+  "name": "MtgDartTools",
+  "friendlyName": "MTG Dart Tools",
+  "description": "Dart Tools",
+  "author": "Milestone",
+  "helpMarkDown": "Replace with markdown to show in help",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "2",
+    "Patch": "4"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "MtgDartTools $(message)",
+  "inputs": [
+    {
+      "name": "command",
+      "type": "pickList",
+      "label": "Command",
+      "defaultValue": "build",
+      "required": true,
+      "helpMarkDown": "The pub command to run. Select 'Custom' to add arguments or use a command not listed here.",
+      "options": {
+          "build": "build",
+          "get": "get"
+      },
+      "properties": {
+          "EditableOptions": "False"
+      }
+    },
+    {
+      "name": "sourcePath",
+      "type": "filePath",
+      "label": "Source Path",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Path in which to search for dart files.(i.e. ClientApp)"
+    },
+    {
+      "name": "destinationPath",
+      "type": "filePath",
+      "label": "Output Path",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "command = build",
+      "helpMarkDown": "Path in which to write the converted JS files. (i.e. wwwroot)"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "dart.ps1",
+      "argumentFormat":  "",
+      "workingDirectory":  "$(currentDirectory)"
+    }
+  }
+}
