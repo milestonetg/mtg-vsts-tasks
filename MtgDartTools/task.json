@@ -1,37 +1,38 @@
 {
+  "$schema": "https://raw.githubusercontent.com/Microsoft/vsts-task-lib/master/tasks.schema.json",
   "id": "807e40e0-4fa7-11e7-9a75-2966c46aa703",
   "name": "MtgDartTools",
   "friendlyName": "MTG Dart Tools",
-  "description": "Dart Tools",
+  "description": "A build task for building and testing Dart packages.",
+  "helpMarkDown": "Uses build_runner to build packages. Dart packages must be compatible with Dart 2.x.",
   "author": "Milestone",
-  "helpMarkDown": "Replace with markdown to show in help",
   "category": "Utility",
-  "visibility": [
-    "Build",
-    "Release"
+  "runsOn": [
+    "Agent"
   ],
   "demands": [],
   "version": {
-    "Major": "0",
-    "Minor": "2",
-    "Patch": "4"
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 32
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "MtgDartTools $(message)",
   "inputs": [
     {
-      "name": "command",
+      "name": "action",
       "type": "pickList",
-      "label": "Command",
+      "label": "Action",
       "defaultValue": "build",
       "required": true,
-      "helpMarkDown": "The pub command to run. Select 'Custom' to add arguments or use a command not listed here.",
+      "helpMarkDown": "The Dart-related action to be ran.",
       "options": {
-          "build": "build",
-          "get": "get"
+        "downloadSdk": "Download SDK",
+        "get": "Get Dependencies",
+        "build": "Build"
       },
       "properties": {
-          "EditableOptions": "False"
+        "EditableOptions": "False"
       }
     },
     {
@@ -40,7 +41,8 @@
       "label": "Source Path",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": "Path in which to search for dart files.(i.e. ClientApp)"
+      "visibleRule": "action != downloadSdk",
+      "helpMarkDown": "Path to the Dart package (should be the directory containing pubspec.yaml)."
     },
     {
       "name": "destinationPath",
@@ -48,15 +50,110 @@
       "label": "Output Path",
       "defaultValue": "",
       "required": true,
-      "visibleRule": "command = build",
-      "helpMarkDown": "Path in which to write the converted JS files. (i.e. wwwroot)"
+      "visibleRule": "action = build",
+      "helpMarkDown": "Path that will contain the build output."
+    },
+    {
+      "name": "sdkPath",
+      "type": "filePath",
+      "label": "SDK Path",
+      "defaultValue": ".\\dart-sdk",
+      "required": true,
+      "visibleRule": "action != downloadSdk",
+      "helpMarkDown": "Path to the Dart SDK (root directory, not the bin folder)."
+    },
+    {
+      "name": "sdkDestinationPath",
+      "type": "filePath",
+      "label": "SDK Destination Path",
+      "defaultValue": ".\\",
+      "required": true,
+      "visibleRule": "action = downloadSdk",
+      "helpMarkDown": "Path to download the Dart SDK to (a folder named 'dart-sdk' will be created at this path)."
+    },
+    {
+      "name": "sdkChannel",
+      "type": "pickList",
+      "label": "SDK Channel",
+      "defaultValue": "stable",
+      "required": true,
+      "helpMarkDown": "Which SDK release channel to use.",
+      "visibleRule": "action = downloadSdk",
+      "options": {
+        "stable": "Stable",
+        "dev": "Dev"
+      }, 
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "sdkVersion",
+      "type": "string",
+      "label": "SDK Version",
+      "defaultValue": "2.0.0",
+      "required": true,
+      "visibleRule": "action = downloadSdk",
+      "helpMarkDown": "Which version of the Dart SDK to download (note: this task will not work with 1.x versions)."
+    },
+    {
+      "name": "sdkPlatform",
+      "type": "pickList",
+      "label": "SDK Platform",
+      "defaultValue": "windows",
+      "required": true,
+      "visibleRule": "action = downloadSdk",
+      "helpMarkDown": "Which platform version of the Dart SDK to download.",
+      "options": {
+        "windows": "Windows",
+        "linux": "Linux",
+        "macos": "Mac OS"
+      },
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "sdkArchitecture",
+      "type": "pickList",
+      "label": "SDK Architecture",
+      "defaultValue": "x64",
+      "required": true,
+      "visibleRule": "action = downloadSdk",
+      "helpMarkDown": "Which architecture of the Dart SDK to download.",
+      "options": {
+        "x86": "x86",
+        "x64": "x64",
+        "ia32": "ia32",
+        "arm": "arm",
+        "arm64": "arm64"
+      },
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "release",
+      "type": "boolean",
+      "label": "Release Mode",
+      "defaultValue": true,
+      "required": true,
+      "helpMarkDown": "Whether the package should be built in release mode.",
+      "visibleRule": "action = build"
+    },
+    {
+      "name": "verbose",
+      "type": "boolean",
+      "label": "Verbose Logging",
+      "defaultValue": false,
+      "required": true,
+      "helpMarkDown": "Whether verbose logging should be used."
     }
   ],
   "execution": {
-    "PowerShell3": {
-      "target": "dart.ps1",
-      "argumentFormat":  "",
-      "workingDirectory":  "$(currentDirectory)"
+    "Node": {
+      "target": "mtg-dart-tools.js",
+      "argumentFormat":  ""
     }
   }
 }

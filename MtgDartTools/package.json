@@ -1,0 +1,17 @@
+{
+  "name": "mtg-dart-tools",
+  "version": "1.0.0",
+  "description": "VSTS build task for Dart packages.",
+  "author": "Milestone",
+  "license": "MIT",
+  "main": "mtg-dart-tools.js",
+  "dependencies": {
+    "vsts-task-lib": "^2.6.1",
+    "yauzl": "^2.10.0"
+  },
+  "devDependencies": {
+    "@types/node": "^10.11.0",
+    "@types/q": "^1.5.1",
+    "@types/yauzl": "~2.9.0"
+  }
+}
