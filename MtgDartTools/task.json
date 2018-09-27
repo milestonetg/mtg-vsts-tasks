@@ -57,7 +57,7 @@
       "name": "sdkPath",
       "type": "filePath",
       "label": "SDK Path",
-      "defaultValue": ".\\dart-sdk",
+      "defaultValue": "$(Agent.BuildDirectory)/dart-sdk",
       "required": true,
       "visibleRule": "action != downloadSdk",
       "helpMarkDown": "Path to the Dart SDK (root directory, not the bin folder)."
@@ -66,7 +66,7 @@
       "name": "sdkDestinationPath",
       "type": "filePath",
       "label": "SDK Destination Path",
-      "defaultValue": ".\\",
+      "defaultValue": "$(Agent.BuildDirectory)",
       "required": true,
       "visibleRule": "action = downloadSdk",
       "helpMarkDown": "Path to download the Dart SDK to (a folder named 'dart-sdk' will be created at this path)."
