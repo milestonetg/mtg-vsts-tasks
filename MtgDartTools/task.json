@@ -14,11 +14,35 @@
   "version": {
     "Major": 1,
     "Minor": 0,
-    "Patch": 33
+    "Patch": 35
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "MtgDartTools $(message)",
   "groups": [
+    {
+      "name": "sdkDownloadOptions",
+      "displayName": "SDK Download Options",
+      "isExpanded": true,
+      "visibleRule": "action = downloadSdk"
+    },
+    {
+      "name": "sourceOptions",
+      "displayName": "Source Options",
+      "isExpanded": true,
+      "visibleRule": "action != downloadSdk"
+    },
+    {
+      "name": "buildOptions",
+      "displayName": "Build Options",
+      "isExpanded": true,
+      "visibleRule": "action = build"
+    },
+    {
+      "name": "sdkOptions",
+      "displayName": "SDK Options",
+      "isExpanded": false,
+      "visibleRule": "action != downloadSdk"
+    },
     {
       "name": "logging",
       "displayName": "Logging",
@@ -46,46 +70,37 @@
       "name": "sourcePath",
       "type": "filePath",
       "label": "Source Path",
+      "groupName": "sourceOptions",
       "defaultValue": "",
       "required": true,
-      "visibleRule": "action != downloadSdk",
       "helpMarkDown": "Path to the Dart package (should be the directory containing pubspec.yaml)."
-    },
-    {
-      "name": "destinationPath",
-      "type": "filePath",
-      "label": "Output Path",
-      "defaultValue": "",
-      "required": true,
-      "visibleRule": "action = build",
-      "helpMarkDown": "Path that will contain the build output."
     },
     {
       "name": "sdkPath",
       "type": "filePath",
       "label": "SDK Path",
+      "groupName": "sdkOptions",
       "defaultValue": "$(Agent.BuildDirectory)/dart-sdk",
       "required": true,
-      "visibleRule": "action != downloadSdk",
       "helpMarkDown": "Path to the Dart SDK (root directory, not the bin folder)."
     },
     {
       "name": "sdkDestinationPath",
       "type": "filePath",
       "label": "SDK Destination Path",
+      "groupName": "sdkDownloadOptions",
       "defaultValue": "$(Agent.BuildDirectory)",
       "required": true,
-      "visibleRule": "action = downloadSdk",
       "helpMarkDown": "Path to download the Dart SDK to (a folder named 'dart-sdk' will be created at this path)."
     },
     {
       "name": "sdkChannel",
       "type": "pickList",
       "label": "SDK Channel",
+      "groupName": "sdkDownloadOptions",
       "defaultValue": "stable",
       "required": true,
       "helpMarkDown": "Which SDK release channel to use.",
-      "visibleRule": "action = downloadSdk",
       "options": {
         "stable": "Stable",
         "dev": "Dev"
@@ -98,18 +113,18 @@
       "name": "sdkVersion",
       "type": "string",
       "label": "SDK Version",
+      "groupName": "sdkDownloadOptions",
       "defaultValue": "2.0.0",
       "required": true,
-      "visibleRule": "action = downloadSdk",
       "helpMarkDown": "Which version of the Dart SDK to download (note: this task will not work with 1.x versions)."
     },
     {
       "name": "sdkPlatform",
       "type": "pickList",
       "label": "SDK Platform",
+      "groupName": "sdkDownloadOptions",
       "defaultValue": "windows",
       "required": true,
-      "visibleRule": "action = downloadSdk",
       "helpMarkDown": "Which platform version of the Dart SDK to download.",
       "options": {
         "windows": "Windows",
@@ -124,9 +139,9 @@
       "name": "sdkArchitecture",
       "type": "pickList",
       "label": "SDK Architecture",
+      "groupName": "sdkDownloadOptions",
       "defaultValue": "x64",
       "required": true,
-      "visibleRule": "action = downloadSdk",
       "helpMarkDown": "Which architecture of the Dart SDK to download.",
       "options": {
         "x86": "x86",
@@ -140,22 +155,31 @@
       }
     },
     {
-      "name": "config",
-      "type": "string",
-      "label": "Build Configuration",
-      "required": false,
-      "defaultValue": "",
-      "helpMarkDown": "Which build.yaml file to use. If specified, build_runner will use `build.<name>.yaml`, where `<name>` is the value set here. If left blank, `build.yaml` will be used (if it exists).",
-      "visibleRule": "action = build"
-    },
-    {
       "name": "release",
       "type": "boolean",
       "label": "Release Mode",
+      "groupName": "buildOptions",
       "defaultValue": true,
       "required": true,
-      "helpMarkDown": "Whether the package should be built in release mode.",
-      "visibleRule": "action = build"
+      "helpMarkDown": "Whether the package should be built in release mode."
+    },
+    {
+      "name": "config",
+      "type": "string",
+      "label": "Build Configuration",
+      "groupName": "buildOptions",
+      "required": false,
+      "defaultValue": "",
+      "helpMarkDown": "Which build.yaml file to use. If specified, build_runner will use `build.<name>.yaml`, where `<name>` is the value set here. If left blank, `build.yaml` will be used (if it exists)."
+    },
+    {
+      "name": "destinationPath",
+      "type": "filePath",
+      "label": "Output Path",
+      "groupName": "buildOptions",
+      "defaultValue": "$(Build.ArtifactStagingDirectory)",
+      "required": true,
+      "helpMarkDown": "Path that will contain the build output."
     },
     {
       "name": "verbose",
