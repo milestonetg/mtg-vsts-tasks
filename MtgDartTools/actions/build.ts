@@ -6,7 +6,7 @@ import * as task from 'vsts-task-lib/task';
 import { getDartPath, getPubPath } from './executable-paths';
 
 /**
- * Builds a Dart application with build_runner.
+ * Builds a Dart package with build_runner.
  */
 export async function build(): Promise<void> {
   const sdkPath: string = task.getInput('sdkPath', true);
@@ -45,8 +45,15 @@ export async function build(): Promise<void> {
   // Run build_runner
   const releaseMode: boolean = task.getBoolInput('release', true);
   const verbose: boolean = task.getBoolInput('verbose', true);
+  const config: string = task.getInput('config', false);
 
   let args: Array<string> = ['run', 'build_runner', 'build', '-o', relativePath];
+
+  if (config && /\S/.test(config)) {
+    // Note: /\S/ ensures the string is not empty or whitespace
+    args.push('-c');
+    args.push(config);
+  }
 
   if (releaseMode) {
     args.push('-r');

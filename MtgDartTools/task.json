@@ -14,10 +14,17 @@
   "version": {
     "Major": 1,
     "Minor": 0,
-    "Patch": 32
+    "Patch": 33
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "MtgDartTools $(message)",
+  "groups": [
+    {
+      "name": "logging",
+      "displayName": "Logging",
+      "isExpanded": false
+    }
+  ],
   "inputs": [
     {
       "name": "action",
@@ -133,6 +140,15 @@
       }
     },
     {
+      "name": "config",
+      "type": "string",
+      "label": "Build Configuration",
+      "required": false,
+      "defaultValue": "",
+      "helpMarkDown": "Which build.yaml file to use. If specified, build_runner will use `build.<name>.yaml`, where `<name>` is the value set here. If left blank, `build.yaml` will be used (if it exists).",
+      "visibleRule": "action = build"
+    },
+    {
       "name": "release",
       "type": "boolean",
       "label": "Release Mode",
@@ -145,6 +161,7 @@
       "name": "verbose",
       "type": "boolean",
       "label": "Verbose Logging",
+      "groupName": "logging",
       "defaultValue": false,
       "required": true,
       "helpMarkDown": "Whether verbose logging should be used."
