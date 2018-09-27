@@ -9,7 +9,7 @@ import { getDartPath, getPubPath } from './executable-paths';
  * Runs 'pub get'.
  */
 export async function getDependencies(): Promise<void> {
-  const sdkPath: string = task.getInput('sdkPath', true);
+  const sdkPath: string = task.getPathInput('sdkPath', true);
 
   // Build a path to pub
   const pubPath = getPubPath(sdkPath);
@@ -30,7 +30,7 @@ export async function getDependencies(): Promise<void> {
   await task.exec(pubPath, '--version');
 
   // Move into the source directory
-  const sourcePath: string = task.getInput('sourcePath', true);
+  const sourcePath: string = task.getPathInput('sourcePath', true);
   task.cd(sourcePath);
 
   // Run 'pub get'

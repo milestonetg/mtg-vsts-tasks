@@ -9,7 +9,7 @@ import { getDartPath, getPubPath } from './executable-paths';
  * Builds a Dart package with build_runner.
  */
 export async function build(): Promise<void> {
-  const sdkPath: string = task.getInput('sdkPath', true);
+  const sdkPath: string = task.getPathInput('sdkPath', true);
 
   // Build a path to pub
   const pubPath = getPubPath(sdkPath);
@@ -30,8 +30,8 @@ export async function build(): Promise<void> {
   await task.exec(pubPath, '--version');
 
   // Get source and destination paths
-  const sourcePath: string = task.getInput('sourcePath', true);
-  const destinationPath: string = task.getInput('destinationPath', true);
+  const sourcePath: string = task.getPathInput('sourcePath', true);
+  const destinationPath: string = task.getPathInput('destinationPath', true);
 
   // Move into the source directory
   task.cd(sourcePath);

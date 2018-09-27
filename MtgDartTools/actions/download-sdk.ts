@@ -139,7 +139,7 @@ function extractSdkZip(sdkZipPath: string): Promise<void> {
     const verbose: boolean = task.getBoolInput('verbose', true);
 
     // Get the destination path
-    const sdkDestinationPath: string = task.getInput('sdkDestinationPath', true);
+    const sdkDestinationPath: string = task.getPathInput('sdkDestinationPath', true);
   
     console.info(`Extracting ${sdkZipPath} into ${sdkDestinationPath}...`);
 
