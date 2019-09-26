@@ -46,8 +46,16 @@ export async function build(): Promise<void> {
   const releaseMode: boolean = task.getBoolInput('release', true);
   const verbose: boolean = task.getBoolInput('verbose', true);
   const config: string = task.getInput('config', false);
+  const buildInputFolder: string = task.getInput('buildInputFolder', false);
 
-  let args: Array<string> = ['run', 'build_runner', 'build', '-o', relativePath];
+  let outputValue: string = relativePath;
+
+  if (buildInputFolder && /\S/.test(buildInputFolder)) {
+    // Note: /\S/ ensures the string is not empty or whitespace
+    outputValue = `${buildInputFolder}:${outputValue}`;
+  } 
+
+  let args: Array<string> = ['run', 'build_runner', 'build', '-o', outputValue];
 
   if (config && /\S/.test(config)) {
     // Note: /\S/ ensures the string is not empty or whitespace
