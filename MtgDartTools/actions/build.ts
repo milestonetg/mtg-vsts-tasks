@@ -47,6 +47,7 @@ export async function build(): Promise<void> {
   const verbose: boolean = task.getBoolInput('verbose', true);
   const config: string = task.getInput('config', false);
   const buildInputFolder: string = task.getInput('buildInputFolder', false);
+  const lowResourcesMode: boolean = task.getBoolInput('lowResourcesMode', false);
 
   let outputValue: string = relativePath;
 
@@ -69,6 +70,10 @@ export async function build(): Promise<void> {
 
   if (verbose) {
     args.push('-v');
+  }
+
+  if (lowResourcesMode) {
+    args.push('--low-resources-mode');
   }
 
   let argsStr: string = args.join(' ');

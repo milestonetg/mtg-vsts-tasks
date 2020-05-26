@@ -13,7 +13,7 @@
   "demands": [],
   "version": {
     "Major": 1,
-    "Minor": 1,
+    "Minor": 2,
     "Patch": 1
   },
   "minimumAgentVersion": "1.95.0",
@@ -162,6 +162,15 @@
       "defaultValue": true,
       "required": true,
       "helpMarkDown": "Whether the package should be built in release mode."
+    },
+    {
+      "name": "lowResourcesMode",
+      "type": "boolean",
+      "label": "Low Resources Mode",
+      "groupName": "buildOptions",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Reduce the amount of memory consumed by the build process. This will slow down builds but allow them to progress in resource constrained environments."
     },
     {
       "name": "config",
