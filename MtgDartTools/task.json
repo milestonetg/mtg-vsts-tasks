@@ -4,7 +4,7 @@
   "name": "MtgDartTools",
   "friendlyName": "MTG Dart Tools",
   "description": "Provides tasks for installing the Dart SDK as well as building and testing Dart packages.",
-  "helpMarkDown": "Uses build_runner to build packages. Dart packages must be compatible with Dart 2.x.",
+  "helpMarkDown": "Uses build_runner to build packages. Dart packages must be compatible with Dart 2.x. The test action uses package:test. If your package uses a different test runner, please use the run action instead.",
   "author": "Milestone",
   "category": "Utility",
   "runsOn": [
@@ -13,8 +13,8 @@
   "demands": [],
   "version": {
     "Major": 2,
-    "Minor": 0,
-    "Patch": 2
+    "Minor": 1,
+    "Patch": 5
   },
   "minimumAgentVersion": "2.0.0",
   "instanceNameFormat": "Dart",
@@ -32,10 +32,28 @@
       "visibleRule": "action != install"
     },
     {
+      "name": "getOptions",
+      "displayName": "Get Options",
+      "isExpanded": false,
+      "visibleRule": "action = get"
+    },
+    {
+      "name": "testOptions",
+      "displayName": "Test Options",
+      "isExpanded": true,
+      "visibleRule": "action = test"
+    },
+    {
       "name": "buildOptions",
       "displayName": "Build Options",
       "isExpanded": true,
       "visibleRule": "action = build"
+    },
+    {
+      "name": "runOptions",
+      "displayName": "Run Options",
+      "isExpanded": true,
+      "visibleRule": "action = run"
     },
     {
       "name": "logging",
@@ -51,11 +69,13 @@
       "label": "Action",
       "defaultValue": "build",
       "required": true,
-      "helpMarkDown": "The Dart-related action to be ran.",
+      "helpMarkDown": "The Dart-related action to be ran.\n\n - Install SDK: Installs the Dart SDK or uses a cached version if available in the Azure Pipelines tool cache.\n - Get Dependencies: Runs pub get.\n - Test: Runs pub run test.\n - Build: Builds packages with package:build_runner.\n - Run: Uses pub run to run any Dart executable.",
       "options": {
         "install": "Install SDK",
         "get": "Get Dependencies",
-        "build": "Build"
+        "test": "Test",
+        "build": "Build",
+        "run": "Run"
       },
       "properties": {
         "EditableOptions": "False"
@@ -95,6 +115,54 @@
       "defaultValue": "2.8.4",
       "required": true,
       "helpMarkDown": "Which version of the Dart SDK to download (note: this task will not work with 1.x versions)."
+    },
+    {
+      "name": "getArguments",
+      "type": "string",
+      "label": "Additional Arguments",
+      "groupName": "getOptions",
+      "required": false,
+      "helpMarkDown": "Additional arguments to pass to pub get."
+    },
+    {
+      "name": "testPlatform",
+      "type": "string",
+      "label": "Platform(s)",
+      "groupName": "testOptions",
+      "required": false,
+      "helpMarkDown": "The comma-separated platform(s) on which to run the tests (e.g. vm, chrome, phantomjs, firefox, ie, node). Defaults to vm."
+    },
+    {
+      "name": "testTags",
+      "type": "string",
+      "label": "Tags",
+      "groupName": "testOptions",
+      "required": false,
+      "helpMarkDown": "Run only tests with all of the specified tags. Supports boolean selector syntax."
+    },
+    {
+      "name": "testExcludeTags",
+      "type": "string",
+      "label": "Exclude Tags",
+      "groupName": "testOptions",
+      "required": false,
+      "helpMarkDown": "Don't run tests with any of the specified tags. Supports boolean selector syntax."
+    },
+    {
+      "name": "testTimeout",
+      "type": "string",
+      "label": "Default Timeout",
+      "groupName": "testOptions",
+      "required": false,
+      "helpMarkDown": "The default test timeout. For example: 15s, 2x, none (defaults to 30s)"
+    },
+    {
+      "name": "testArguments",
+      "type": "string",
+      "label": "Additional Arguments",
+      "groupName": "testOptions",
+      "required": false,
+      "helpMarkDown": "Additional arguments to pass to package:test."
     },
     {
       "name": "release",
@@ -140,6 +208,31 @@
       "defaultValue": "$(Build.ArtifactStagingDirectory)",
       "required": true,
       "helpMarkDown": "Path that will contain the build output."
+    },
+    {
+      "name": "buildArguments",
+      "type": "string",
+      "label": "Additional Arguments",
+      "groupName": "buildOptions",
+      "required": false,
+      "helpMarkDown": "Additional arguments to pass to build_runner."
+    },
+    {
+      "name": "runExecutable",
+      "type": "string",
+      "label": "Executable",
+      "groupName": "runOptions",
+      "required": true,
+      "defaultValue": "test",
+      "helpMarkDown": "The name of the dart file in bin or a path to another dart file to run. Can additionally target an executable in a dependency in the form <dependency>:<executable>."
+    },
+    {
+      "name": "runArguments",
+      "type": "string",
+      "label": "Arguments",
+      "groupName": "runOptions",
+      "required": false,
+      "helpMarkDown": "Arguments to pass to the executable."
     },
     {
       "name": "verbose",

@@ -2,13 +2,15 @@ import * as path from 'path';
 
 import * as task from 'azure-pipelines-task-lib/task';
 
+const notWhitespace = /\S/;
+
 /**
  * Builds a Dart package with build_runner.
  */
 export async function build(): Promise<void> {
   // Get source and destination paths
-  const sourcePath: string = task.getPathInput('sourcePath', true)!;
-  const destinationPath: string = task.getPathInput('destinationPath', true)!;
+  let sourcePath: string = task.getPathInput('sourcePath', true)!;
+  let destinationPath: string = task.getPathInput('destinationPath', true)!;
 
   // Move into the source directory
   task.cd(sourcePath);
@@ -17,26 +19,25 @@ export async function build(): Promise<void> {
   //
   // Due to a bug in build_runner, using an absolute path will result in
   // only part of the output being copied to the output directory.
-  const relativePath: string = path.relative(sourcePath, destinationPath);
+  let relativePath: string = path.relative(sourcePath, destinationPath);
 
   // Run build_runner
-  const releaseMode: boolean = task.getBoolInput('release', true);
-  const verbose: boolean = task.getBoolInput('verbose', true);
-  const config: string | undefined = task.getInput('config');
-  const buildInputFolder: string | undefined = task.getInput('buildInputFolder');
-  const lowResourcesMode: boolean = task.getBoolInput('lowResourcesMode');
+  let releaseMode: boolean = task.getBoolInput('release');
+  let verbose: boolean = task.getBoolInput('verbose');
+  let config: string | undefined = task.getInput('config');
+  let buildInputFolder: string | undefined = task.getInput('buildInputFolder');
+  let lowResourcesMode: boolean = task.getBoolInput('lowResourcesMode');
+  let additionalArgs: string | undefined = task.getInput('buildArguments');
 
   let outputValue: string = relativePath;
 
-  if (buildInputFolder && /\S/.test(buildInputFolder)) {
-    // Note: /\S/ ensures the string is not empty or whitespace
+  if (buildInputFolder && notWhitespace.test(buildInputFolder)) {
     outputValue = `${buildInputFolder}:${outputValue}`;
   } 
 
   let args: Array<string> = ['run', 'build_runner', 'build', '-o', outputValue];
 
-  if (config && /\S/.test(config)) {
-    // Note: /\S/ ensures the string is not empty or whitespace
+  if (config && notWhitespace.test(config)) {
     args.push('-c');
     args.push(config);
   }
@@ -53,12 +54,16 @@ export async function build(): Promise<void> {
     args.push('--low-resources-mode');
   }
 
+  if (additionalArgs && notWhitespace.test(additionalArgs)) {
+    args.push(additionalArgs);
+  }
+
   let argsStr: string = args.join(' ');
 
   console.info(`Running 'pub ${argsStr}'...`);
   console.info(`Pub working directory: ${sourcePath}`);
 
-  const pubStatusCode: number = await task.exec('pub', argsStr);
+  let pubStatusCode: number = await task.exec('pub', argsStr);
 
   if (pubStatusCode !== 0) {
     throw new Error(`Pub exited with code ${pubStatusCode}.`);

@@ -1,7 +1,9 @@
 import * as task from 'azure-pipelines-task-lib/task';
 import { installSdk } from './actions/install-sdk';
 import { getDependencies } from './actions/get-dependencies';
+import { test } from './actions/test';
 import { build } from './actions/build';
+import { run } from './actions/run';
 
 /**
  * Task entrypoint.
@@ -23,8 +25,12 @@ async function main(): Promise<void> {
       return installSdk();
     case 'get':
       return getDependencies();
+    case 'test':
+      return test();
     case 'build':
       return build();
+    case 'run':
+      return run();
     default:
       throw new Error(`Invalid action: '${actionStr}'.`);
   }
