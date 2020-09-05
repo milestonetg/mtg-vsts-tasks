@@ -1,37 +1,14 @@
-import * as fs from 'fs';
 import * as path from 'path';
 
-import * as task from 'vsts-task-lib/task';
-
-import { getDartPath, getPubPath } from './executable-paths';
+import * as task from 'azure-pipelines-task-lib/task';
 
 /**
  * Builds a Dart package with build_runner.
  */
 export async function build(): Promise<void> {
-  const sdkPath: string = task.getPathInput('sdkPath', true);
-
-  // Build a path to pub
-  const pubPath = getPubPath(sdkPath);
-
-  if (!fs.existsSync(pubPath)) {
-    throw new Error(`Could not find pub at ${pubPath}.`);
-  }
-
-  // Build a path to dart
-  const dartPath = getDartPath(sdkPath);
-
-  if (!fs.existsSync(pubPath)) {
-    throw new Error(`Could not find dart at ${dartPath}.`);
-  }
-
-  // Display pub and dart versions
-  await task.exec(dartPath, '--version');
-  await task.exec(pubPath, '--version');
-
   // Get source and destination paths
-  const sourcePath: string = task.getPathInput('sourcePath', true);
-  const destinationPath: string = task.getPathInput('destinationPath', true);
+  const sourcePath: string = task.getPathInput('sourcePath', true)!;
+  const destinationPath: string = task.getPathInput('destinationPath', true)!;
 
   // Move into the source directory
   task.cd(sourcePath);
@@ -45,9 +22,9 @@ export async function build(): Promise<void> {
   // Run build_runner
   const releaseMode: boolean = task.getBoolInput('release', true);
   const verbose: boolean = task.getBoolInput('verbose', true);
-  const config: string = task.getInput('config', false);
-  const buildInputFolder: string = task.getInput('buildInputFolder', false);
-  const lowResourcesMode: boolean = task.getBoolInput('lowResourcesMode', false);
+  const config: string | undefined = task.getInput('config');
+  const buildInputFolder: string | undefined = task.getInput('buildInputFolder');
+  const lowResourcesMode: boolean = task.getBoolInput('lowResourcesMode');
 
   let outputValue: string = relativePath;
 
@@ -81,7 +58,7 @@ export async function build(): Promise<void> {
   console.info(`Running 'pub ${argsStr}'...`);
   console.info(`Pub working directory: ${sourcePath}`);
 
-  const pubStatusCode: number = await task.exec(pubPath, argsStr);
+  const pubStatusCode: number = await task.exec('pub', argsStr);
 
   if (pubStatusCode !== 0) {
     throw new Error(`Pub exited with code ${pubStatusCode}.`);

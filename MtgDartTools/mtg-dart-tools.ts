@@ -1,5 +1,5 @@
-import * as task from 'vsts-task-lib/task';
-import { downloadSdk } from './actions/download-sdk';
+import * as task from 'azure-pipelines-task-lib/task';
+import { installSdk } from './actions/install-sdk';
 import { getDependencies } from './actions/get-dependencies';
 import { build } from './actions/build';
 
@@ -7,13 +7,20 @@ import { build } from './actions/build';
  * Task entrypoint.
  */
 async function main(): Promise<void> {
-  const actionStr: string = task.getInput('action', true);
+  const actionStr: string = task.getInput('action', true)!;
 
   console.info(`Action: ${actionStr}`);
 
+  if (actionStr !== 'install') {
+    // Display pub and dart versions
+    await task.exec('dart', '--version');
+    await task.exec('pub', '--version');
+  }
+
+  // Run action
   switch (actionStr) {
-    case 'downloadSdk':
-      return downloadSdk();
+    case 'install':
+      return installSdk();
     case 'get':
       return getDependencies();
     case 'build':

@@ -1,6 +1,6 @@
 # MtgDartTools
 
-A VSTS build task for building and testing Dart packages.
+Provides tasks for installing the Dart SDK as well as building and testing Dart packages.
 
 ## Uploading
 
