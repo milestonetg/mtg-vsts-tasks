@@ -16,9 +16,24 @@ export async function test(): Promise<void> {
   let testTags: string | undefined = task.getInput('testTags');
   let testExcludeTags: string | undefined = task.getInput('testExcludeTags');
   let testTimeout: string | undefined = task.getInput('testTimeout');
+  let testWithBuildRunner: boolean = task.getBoolInput('testWithBuildRunner');
+  let testBuildRunnerArguments: string | undefined = task.getInput('testBuildRunnerArguments');
   let additionalArgs: string | undefined = task.getInput('testArguments');
 
-  let args: Array<string> = ['run', 'test'];
+  let args: Array<string> = ['run'];
+
+  if (testWithBuildRunner) {
+    args.push('build_runner');
+    args.push('test');
+
+    if (testBuildRunnerArguments && notWhitespace.test(testBuildRunnerArguments)) {
+      args.push(testBuildRunnerArguments);
+    }
+
+    args.push('--');
+  } else {
+    args.push('test');
+  }
 
   if (verbose) {
     args.push('-v');

@@ -1,6 +1,6 @@
 {
   "name": "mtg-dart-tools",
-  "version": "2.1.5",
+  "version": "2.2.1",
   "description": "VSTS build task for Dart packages.",
   "author": "Milestone",
   "license": "MIT",
